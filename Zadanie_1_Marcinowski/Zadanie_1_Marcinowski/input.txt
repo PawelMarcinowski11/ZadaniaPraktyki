@@ -1,0 +1,1 @@
+W³aœciwie, to zapisuj¹c dowoln¹ zawartoœæ do pliku wejœciowego, czêœæ bajtów oka¿e siê prawid³owymi obiektami, a czêœæ - b³êdnymi.
