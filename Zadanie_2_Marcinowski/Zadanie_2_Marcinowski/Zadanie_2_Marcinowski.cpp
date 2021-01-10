@@ -15,7 +15,7 @@ unsigned long long toDec(std::string bin)
 
 	std::string cutNumber = bin;
 	unsigned long long result = 0;
-	int power = pow(2, cutNumber.size() - 1); //Dodajemy cyfry od lewej do prawej, więc zaczynamy od najwyższej potęgi liczby 2
+	unsigned long long power = pow(2, cutNumber.size() - 1); //Dodajemy cyfry od lewej do prawej, więc zaczynamy od najwyższej potęgi liczby 2
 	for (int i = 0; i < cutNumber.size(); i++, power /= 2) {
 		if (cutNumber[i] == '1') {
 			result += power; //Dodajemy daną potęgę liczby 2
@@ -76,27 +76,26 @@ int main()
 		else if (input == "zmiana")
 			mode == bin ? mode = dec : mode = bin; //Jeżeli tryb jest binarny, zostanie zmieniony na dziesiętny - i odwrotnie.
 		else {
-			try {
-				unsigned long long val = std::stoull(input); //Funkcja zwraca wartość typu unsigned long long, więc nie obsłuży wartości wyższych niż 18446744073709551615
 
 				std::cout << std::endl;
 
 				if (mode == bin) {
 					if (input.find_first_not_of("01") != std::string::npos) //Upewniamy się, że string repezentujący binarną liczbę, nie zawiera innych znaków niż 0 i 1
 						std::cout << "Podana wartosc nie jest prawidlowa!" << std::endl;
+					else if (input.length() > 64)
+						std::cout << "Podana wartosc jest zbyt duza!" << std::endl;
 					else
 						std::cout << "Wynik dziesietny: " << toDec(input) << std::endl;
 				}
 				else {
-					if (input.find_first_not_of("0123456789") != std::string::npos)
-						std::cout << "Podana wartosc nie jest prawidlowa!" << std::endl;
-					else
+					try {
+						unsigned long long val = std::stoull(input); //Funkcja zwraca wartość typu unsigned long long, więc nie obsłuży wartości wyższych niż 18446744073709551615
 						std::cout << "Wynik binarny: " << toBin(val) << std::endl;
+					}
+					catch (std::exception e) { //Łapiemy wyjątki, które może wyrzucić funkcja std::stoull
+						std::cout << "Podana wartosc nie jest prawidlowa!" << std::endl;
+					}
 				}
-			}
-			catch (std::exception e) { //Łapiemy wyjątki, które może wyrzucić funkcja std::stoull
-				std::cout << "Podana wartosc nie jest prawidlowa!" << std::endl;
-			}
 		}
 		std::cout << std::endl;
 	}
