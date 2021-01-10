@@ -30,7 +30,7 @@ private:
     int state;
 
     /*
-    * Funkcja daje znać autopilotowi, jaki manewr wykonać
+    * Funkcja daje znać kierowcy, jaki manewr wykonać
     */
     int changeState(int newState) {
         if (state != turnedOff) { //Jeżeli samochód jest zgaszony, jedynym sposobem na zmianę jego stanu jest odpalenie go
@@ -94,9 +94,7 @@ private:
             }
         }
     }
-
 public:
-
     /*
     * W konstruktorze należy podać parametry techniczne samochodu
     */
@@ -111,6 +109,12 @@ public:
         state = turnedOff;
     }
 
+    /*
+    * Gettery pól, które mają być dostępne do wglądu
+    * Nie ma setterów, gdyż nie mamy możliwości zmienić parametrów samochodu z zewnątrz
+    * Przykładowo, nie możemy ustawić przebiegu samochodu na niższy - zmienia się on automatycznie,
+    * wraz z przebytymi kilometrami
+    */
     std::string getBrand() {
         return brand;
     }
@@ -123,6 +127,12 @@ public:
     double getMileage() {
         return mileage;
     }
+
+    /*
+    * Funkcja wywołuje metodę "drive", która periodycznie aktualizuje parametry samochodu
+    * w zależności od stanu, w którym się znajduje
+    * Jeżeli metoda "drive" już działa, nie zostanie wywołana ponownie
+    */
     int turnOn() {
         if (state == turnedOff) {
             state = speedingUp;
@@ -133,6 +143,10 @@ public:
         else
             return -1;
     }
+
+    /*
+    * Funkcje odpowiedzialne za zmianę stanu samochodu (bądź wykonywanego przez niego manewru)
+    */
     int speedUp() {
         return changeState(speedingUp);
     }
@@ -145,8 +159,13 @@ public:
     int turnRight() {
         return changeState(turningRight);
     }
+
+    /*
+    * Funkcja próbuje ustawić stan samochodu na zgaszony
+    * Nie powiedzie się to, jeśli samochód dalej jest w ruchu
+    */
     int turnOff() {
-        if (state != turnedOff && currentSpeed < 1.0) {
+        if (state != turnedOff && currentSpeed < 0.01) {
             state = turnedOff;
             return 0;
         }
@@ -155,6 +174,9 @@ public:
     }
 };
 
+/*
+* Funkcja periodycznie odczytuje parametry samochodu i wypisuje je w konsoli
+*/
 void registerParameters(car &c, int poolingInterval) {
     while (1) {
         std::chrono::milliseconds step(poolingInterval);
@@ -196,7 +218,7 @@ int main()
 
     //car Ferrari(340.0, 33.0, 20.0, 10000.0, "Ferrari");
     //car Lamborgini(341.0, 40.0, 25.0, 15000.0, "Lamborgini");
-    car Passat(190.0, 8.0, 10.0, 300000.0, "Passat");
+    car Passat(190.0, 8.5, 10.0, 300000.0, "Passat");
 
     //std::thread(registerParameters, std::ref(Ferrari), 1000).detach();
     //std::thread(driveAround, std::ref(Ferrari)).detach();
